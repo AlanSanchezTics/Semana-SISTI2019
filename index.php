@@ -24,6 +24,9 @@
     <!-- Animation Css -->
     <link href="./plugins/animate-css/animate.css" rel="stylesheet" />
 
+    <!--WaitMe Css-->
+    <link href="./plugins/waitme/waitMe.css" rel="stylesheet" />
+
     <!-- Custom Css -->
     <link href="./build/css/style.css" rel="stylesheet">
 </head>
@@ -85,6 +88,9 @@
     <!-- Validation Plugin Js -->
     <script src="./plugins/jquery-validation/jquery.validate.js"></script>
     <script src="./plugins/jquery-validation/localization/messages_es.js"></script>
+
+    <!-- Wait Me Plugin Js -->
+    <script src="./plugins/waitme/waitMe.js"></script>
 
     <!-- Custom Js -->
     <script src="./build/js/admin.js"></script>
