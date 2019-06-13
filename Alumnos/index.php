@@ -2,6 +2,13 @@
 <html>
 <?php
         include '../database.php';
+        session_name("webSession");
+        session_start();
+        if(!(isset($_SESSION["ID_USUARIO"])) || $_SESSION["TIPO"]!="Administrador"){
+            session_destroy();
+            header("Location: ../");
+        }
+        var_dump($_SESSION["ID_USUARIO"]);
     ?>
 
 <head>
@@ -85,12 +92,12 @@
                     <img src="../images/user.png" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alan David</div>
-                    <div class="email">Administrator</div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $_SESSION["NOMBRE"]; ?></div>
+                    <div class="email"><?php echo $_SESSION["TIPO"]; ?></div>
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
-                            <li><a href="javascript:void(0);"><i class="material-icons">input</i>Cerrar Sesión</a></li>
+                            <li><a href="../salir.php"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                         </ul>
                     </div>
                 </div>

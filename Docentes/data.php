@@ -9,7 +9,10 @@ function registrarDocente($matricula,$nombre,$apaterno,$amaterno,$email,$telefon
     }
     $sql = "INSERT INTO `tbl_docentes`(`matricula`, `nomdoc`, `docapaterno`, `docamaterno`, `correo`, `telefono`, `sexo`, `existe`) VALUES ({$matricula},'{$nombre}','{$apaterno}','{$amaterno}','{$email}','{$telefono}','{$sexo}',1)";
     if(mysqli_query($conn, $sql) == TRUE){
-        die("ADDED");
+        $sql = "INSERT INTO `tbl_usuarios`(`usuario`, `clave`, `tipo`, `existe`) VALUES ({$matricula},{$matricula},3,1)";
+        if(mysqli_query($conn, $sql) == TRUE){
+            die("ADDED");
+        }
     }
 }
 function eliminarDocente($matricula){
