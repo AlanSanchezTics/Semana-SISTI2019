@@ -29,7 +29,7 @@
             "tall_id"=>$row['idtaller'],
             "tall_nombre"=>$row['nomtaller'],
             "tall_destaller"=>$row['destaller'],
-            "tall_imagen"=>$row['imgtaller'],
+            "tall_imagen"=>$row['imgtaller']="http://ciaigandhi.com/Semana-SISTI2019/Actividades/images/".$row['imgtaller'],
             "tall_ponente"=>$row['ponente'],         
             "tall_fecha"=>$row['fecha'],
             "tall_hinicial"=>date("H:i",strtotime($row['hinicio'])),

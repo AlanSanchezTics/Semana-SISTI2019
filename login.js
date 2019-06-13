@@ -4,7 +4,7 @@ $(function () {
 });
 var wizardForm = function () {
     var form = $('#login-form').show();
-    form.validate({
+    var result = form.validate({
         highlight: function (input) {
             $(input).parents('.form-line').addClass('error');
         },
@@ -15,6 +15,7 @@ var wizardForm = function () {
             $(element).parents('.input-group').append(error);
         }
     });
+    console.log(result);
 }
 var login = function () {
     $("#login-form").on('submit', function (e) {

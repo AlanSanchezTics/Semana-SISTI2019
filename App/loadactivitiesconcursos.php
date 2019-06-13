@@ -17,7 +17,7 @@
             "act_fecha"=>$row['fecha'],
             "act_hinicial"=>date("H:i",strtotime($row['hinicio'])),
             "act_hfinal"=>date("H:i",strtotime($row['hfinal'])),            
-            "act_imagen"=>$row['imgevento'])
+            "act_imagen"=>$row['imgevento']="http://ciaigandhi.com/Semana-SISTI2019/Actividades/images/".$row['imgevento'])
             );
     }    
     echo json_encode($res);    
