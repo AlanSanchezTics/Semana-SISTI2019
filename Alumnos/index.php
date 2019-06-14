@@ -8,15 +8,14 @@
             session_destroy();
             header("Location: ../");
         }
-        var_dump($_SESSION["ID_USUARIO"]);
     ?>
 
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>SISTI | Alumnos asistentes</title>
-    <!-- Favicon
-    <link rel="icon" href="../../favicon.ico" type="image/x-icon">-->
+    <!-- Favicon-->
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
@@ -121,13 +120,13 @@
                     </li>
                     <li>
                         <a href="../Actividades/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Actividades</span>
                         </a>
                     </li>
                     <li>
                         <a href="../Talleres/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Talleres</span>
                         </a>
                     </li>
@@ -262,7 +261,7 @@
                             <div class="body">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="text" name="nocontrol" id="NoControl" class="form-control" required maxlength="8" pattern="[0-9]{10}">
+                                        <input type="text" name="nocontrol" id="NoControl" class="form-control" required maxlength="8">
                                         <label class="form-label">No. de Control</label>
                                     </div>
                                 </div>

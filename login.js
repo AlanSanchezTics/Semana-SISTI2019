@@ -43,7 +43,7 @@ var login = function (form) {
                             window.location.replace("./Alumnos/");
                             break;
                         case 'Docente':
-                            window.location.replace("./doc/");
+                            window.location.replace("./doc/Alumnos/");
                             break;
                     }
                     break;

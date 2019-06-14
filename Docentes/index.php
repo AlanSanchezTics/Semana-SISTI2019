@@ -120,13 +120,13 @@
                     </li>
                     <li>
                         <a href="../Actividades/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Actividades</span>
                         </a>
                     </li>
                     <li>
                         <a href="../Talleres/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Talleres</span>
                         </a>
                     </li>

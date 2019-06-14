@@ -15,7 +15,7 @@ $(function () {
             return false;
         }
     });
-    wizardForm();
+    //wizardForm();
     guardarData();
 });
 var listar = function () {
@@ -153,26 +153,27 @@ var fnButtons = function (table, tbody) {
             showCancelButton: true,
             closeOnConfirm: false,
         }, function (inputValue) {
-            if (inputValue === "") {
-                swal.showInputError("El numero de talleres debe ser numerico"); return false;
-            }
-            $.ajax({
-                type: "POST",
-                url: "data.php",
-                data: {
-                    "opcion": "TALLERES",
-                    "nocontrol": data.nocontrol,
-                    "talleres": inputValue
-                },
-                success: function (response) {
-                    if (response === 'true') {
-                        swal("Talleres asigandos", "se han asignado " + inputValue + " talleres al alumno " + data.nombre, "success");
-                        listar();
-                    } else {
-                        swal("Ups!", "hubo un error en el proceso. Contacta al administrador.", "error");
+            if (inputValue === "" || inputValue < 0) {
+                swal.showInputError("El numero de talleres debe ser numerico o mayor a 0"); return false;
+            } else if (inputValue != false) {
+                $.ajax({
+                    type: "POST",
+                    url: "data.php",
+                    data: {
+                        "opcion": "TALLERES",
+                        "nocontrol": data.nocontrol,
+                        "talleres": inputValue
+                    },
+                    success: function (response) {
+                        if (response === 'true') {
+                            swal("Talleres asigandos", "se han asignado " + inputValue + " talleres al alumno " + data.nombre, "success");
+                            listar();
+                        } else {
+                            swal("Ups!", "hubo un error en el proceso. Contacta al administrador.", "error");
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     });
 }

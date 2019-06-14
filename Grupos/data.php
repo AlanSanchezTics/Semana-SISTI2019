@@ -36,7 +36,7 @@ function getGrupos(){
     }
     echo json_encode($json);
 }
-function registrarGrupo($semestre, $grupo, $carrera){
+function registrarGrupo($semestre, $grupo, $carrera, $docente){
     include '../database.php';
 
     $sql = "SELECT * FROM tbl_grupo WHERE nomgrupo = '{$grupo}' AND semestre = {$semestre} AND carrera = {$carrera}";
@@ -45,11 +45,15 @@ function registrarGrupo($semestre, $grupo, $carrera){
         die("EXIST");
     }
     $sql = "INSERT INTO `tbl_grupo`(`nomgrupo`, `semestre`, `carrera`, `existe`) VALUES ('{$grupo}',{$semestre},{$carrera},1)";
-    $result = mysqli_query($conn, $sql);
-    if(!$result){
-        die(mysqli_error($conn));
+    if(mysqli_query($conn, $sql)===TRUE){
+        $sql = "SELECT MAX(idgrupo) FROM tbl_grupo WHERE existe =1";
+        $result = mysqli_query($conn, $sql);
+        $idGrupo = mysqli_fetch_array($result);
+        
+        $sql = "INSERT INTO `tbl_asig_grupo_doc`(`iddoc`, `idgrupo`, `idperiodo`, `asigexiste`) VALUES ({$docente},{$idGrupo[0]},1,1)";
+        if(mysqli_query($conn, $sql)===TRUE){die("ADDED");}else{die("ERROR");}
     }
-    die("ADDED");
+    
 }
 function addTalleres($nocontrol, $notalleres){
     include '../database.php';
@@ -58,18 +62,25 @@ function addTalleres($nocontrol, $notalleres){
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_array($result);
     $notalleres = $notalleres+$row[0];
-
-    $sql = "UPDATE tbl_alumnos SET notalleres = {$notalleres} WHERE nocontrol = {$nocontrol}";
+    $sql = "SELECT monto FROM tbl_pagos WHERE nocontrol = {$nocontrol}";
+    $result = mysqli_query($conn, $sql);
+    $cantidad = mysqli_fetch_array($result);
+    $monto = $notalleres*50;
+    $total = $monto+$cantidad[0];
+    $sql = "UPDATE tbl_pagos SET monto = {$total} WHERE nocontrol = $nocontrol";
     if(mysqli_query($conn, $sql) === TRUE){
-        die('true');
-    }else{
-        die('false');
+        $sql = "UPDATE tbl_alumnos SET notalleres = {$notalleres} WHERE nocontrol = {$nocontrol}";
+        if(mysqli_query($conn, $sql) === TRUE){
+            die('true');
+        }else{
+            die(mysqli_error($conn));
+        }
     }
 }
 function getDatos($id){
     include '../database.php';
 
-    $sql = "SELECT * FROM tbl_grupo where idgrupo = {$id}";
+    $sql = "SELECT tbl_grupo.idgrupo, tbl_grupo.nomgrupo, tbl_grupo.semestre,tbl_grupo.carrera, tbl_asig_grupo_doc.iddoc  FROM tbl_grupo, tbl_asig_grupo_doc where tbl_asig_grupo_doc.idgrupo= tbl_grupo.idgrupo AND idgrupo = {$id}";
     $result = mysqli_query($conn, $sql);
     if(!$result){
         die(mysqli_error($conn));
@@ -80,12 +91,13 @@ function getDatos($id){
             'id' => $row[0], 
             'grupo' => $row[1],
             'semestre' => $row[2],
-            'carrera' => $row[3]
+            'carrera' => $row[3],
+            'docente' => $row[4]
         );
     }
     echo json_encode($json);
 }
-function editarGrupo($id, $semestre, $grupo, $carrera){
+function editarGrupo($id, $semestre, $grupo, $carrera, $docente){
     include '../database.php';
 
     $sql = "SELECT * FROM tbl_grupo WHERE nomgrupo = '{$grupo}' AND semestre = {$semestre} AND carrera = {$carrera} AND idgrupo <> {$id}";
@@ -94,11 +106,11 @@ function editarGrupo($id, $semestre, $grupo, $carrera){
         die("EXIST");
     }
     $sql = "UPDATE `tbl_grupo` SET `nomgrupo`='{$grupo}',`semestre`={$semestre},`carrera`={$carrera} WHERE idgrupo = {$id}";
-    $result = mysqli_query($conn, $sql);
-    if(!$result){
-        die(mysqli_error($conn));
+    if(mysqli_query($conn, $sql) === TRUE){
+        $sql = "UPDATE tbl_asig_grupo_doc SET iddoc = {$docente} WHERE idgrupo = {$id}";
+        if(mysqli_query($conn, $sql) === TRUE){die("UPDATED");}else{die("ERROR");}
     }
-    die("UPDATED");
+    
 }
 function eliminarGrupo($id){
     include '../database.php';
@@ -111,10 +123,28 @@ function eliminarGrupo($id){
     die("DELETED");
 
 }
+function getDocente($id){
+    include '../database.php';
+
+    $sql = "SELECT tbl_docentes.nomdoc, tbl_docentes.docapaterno, tbl_docentes.docamaterno FROM tbl_asig_grupo_doc, tbl_docentes WHERE tbl_asig_grupo_doc.iddoc = tbl_docentes.matricula AND tbl_asig_grupo_doc.idgrupo = {$id}";
+    $result = mysqli_query($conn, $sql);
+    if(!$result){
+        die(mysqli_error($conn));
+    }
+    $json = "";
+    if($row = mysqli_fetch_array($result)){
+        $json = $row[0]." ".$row[1]." ".$row[2];
+    }
+    echo $json;
+}
 if (isset($_POST["opcion"])) {
     $opcion = $_POST["opcion"];
 
     switch ($opcion) {
+        case 'GETDOC':
+            $id = $_POST["id"];
+            getDocente($id);
+            break;
         case 'ELIMINAR':
             $id = $_POST["id"];
             eliminarGrupo($id);
@@ -124,7 +154,8 @@ if (isset($_POST["opcion"])) {
             $semestre = $_POST["semestre"];
             $grupo = $_POST["grupo"];
             $carrera = $_POST["carrera"];
-            editarGrupo($id, $semestre, $grupo, $carrera);
+            $docente = $_POST["docente"];
+            editarGrupo($id, $semestre, $grupo, $carrera, $docente);
             break;
         case 'GETDATOS':
             $id = $_POST["id"];
@@ -141,7 +172,8 @@ if (isset($_POST["opcion"])) {
             $semestre = $_POST["semestre"];
             $grupo = $_POST["grupo"];
             $carrera = $_POST["carrera"];
-            registrarGrupo($semestre, $grupo, $carrera);
+            $docente = $_POST["docente"];
+            registrarGrupo($semestre, $grupo, $carrera, $docente);
             break;
         case 'TALLERES':
             $nocontrol = $_POST["nocontrol"];

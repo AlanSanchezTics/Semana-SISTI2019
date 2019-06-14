@@ -14,7 +14,7 @@
 
         switch ($usuario[1]) {
             case 'Docente':
-                $sql = "SELECT `nomdoc`, `docapaterno`, `docamaterno` FROM `tbl_docentes` WHERE matricula = {$user}";
+                $sql = "SELECT `nomdoc`, `docapaterno`, `docamaterno`, `sexo` FROM `tbl_docentes` WHERE matricula = {$user}";
                 $result = mysqli_query($conn,$sql);
                 if(!$result){
                     die("SQL ERROR: ". mysqli_error($conn));
@@ -26,6 +26,7 @@
                     $_SESSION["MATRICULA"] = $user;
                     $_SESSION["NOMBRE"] = $row[0]." ".$row[1]." ".$row[2];
                     $_SESSION["TIPO"] = $usuario[1];
+                    $_SESSION["SEXO"] = $row[3];
                 }
                 $json = array(
                     'response' =>'DONE',

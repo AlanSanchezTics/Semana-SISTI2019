@@ -2,7 +2,7 @@ $(document).ready(function () {
     moment.locale('es');
     getTalleres();
     loadFoto();
-    wizardForm();
+    //wizardForm();
     guardarData();
     $('[href="#modal"]').on('click', function () {
         var modal = $(this).attr('data-target');

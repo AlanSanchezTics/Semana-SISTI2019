@@ -6,6 +6,7 @@ $(function () {
     });
     showGrupo();
     getGrupos();
+    guardarData($('#tblAlumnos').DataTable());
 });
 var guardarData = function (table) {
     $('#formData').on('submit', function (e) {
@@ -34,6 +35,14 @@ var showGrupo = function () {
             bg: '#FFF'
         });
         listar(select);
+        $.ajax({
+            type: "POST",
+            url: "data.php",
+            data: {"id": select, "opcion":"GETDOC"},
+            success: function (response) {
+                $("#docenteName").html("Docente asignado: "+response);
+            }
+        });
     });
 }
 var getGrupos = function () {
@@ -105,27 +114,29 @@ var fnButtons = function (table, tbody) {
             showCancelButton: true,
             closeOnConfirm: false,
         }, function (inputValue) {
-            if (inputValue === "") {
-                swal.showInputError("El numero de talleres debe ser numerico"); return false;
-            }
-            $.ajax({
-                type: "POST",
-                url: "data.php",
-                data: {
-                    "opcion": "TALLERES",
-                    "nocontrol": data.nocontrol,
-                    "talleres": inputValue
-                },
-                success: function (response) {
-                    if (response === 'true') {
-                        swal("Talleres asigandos", "se han asignado " + inputValue + " talleres al alumno " + data.nombre, "success");
-                        var select = $("#grupos").val();
-                        listar(select);
-                    } else {
-                        swal("Ups!", "hubo un error en el proceso. Contacta al administrador.", "error");
+            if (inputValue === "" || inputValue < 0) {
+                swal.showInputError("El numero de talleres debe ser numerico o mayor a 0"); return false;
+            } else if (inputValue != false) {
+                $.ajax({
+                    type: "POST",
+                    url: "data.php",
+                    data: {
+                        "opcion": "TALLERES",
+                        "nocontrol": data.nocontrol,
+                        "talleres": inputValue
+                    },
+                    success: function (response) {
+                        if (response === 'true') {
+                            swal("Talleres asigandos", "se han asignado " + inputValue + " talleres al alumno " + data.nombre, "success");
+                            var select = $("#grupos").val();
+                            listar(select);
+                        } else {
+                            console.log(response);
+                            swal("Ups!", "hubo un error en el proceso. Contacta al administrador.", "error");
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     });
     $("a.editar").on('click', function () {
@@ -143,6 +154,7 @@ var fnButtons = function (table, tbody) {
                     $("#Semestre").val(value.semestre);
                     $("#grupo").val(value.grupo);
                     $("#carrera").val(value.carrera);
+                    $('[name="docente"]').val(value.docente);
 
                 });
                 $("#formData").find('select.show-tick').selectpicker('render');
@@ -186,6 +198,7 @@ var val_respuesta = function (res, table) {
                 $('#modal-form').modal('hide');
                 getGrupos();
                 table.clear().draw();
+                $("#docenteName").html("");
             });
             break;
         case "UPDATED":
@@ -196,6 +209,7 @@ var val_respuesta = function (res, table) {
                 $('#modal-form').modal('hide');
                 getGrupos();
                 table.clear().draw();
+                $("#docenteName").html("");
             });
             break;
         case "ADDED":
@@ -206,6 +220,7 @@ var val_respuesta = function (res, table) {
                 $('#modal-form').modal('hide');
                 getGrupos();
                 table.clear().draw();
+                $("#docenteName").html("");
             });
             break;
         case 'EXIST':

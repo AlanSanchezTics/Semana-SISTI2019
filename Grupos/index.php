@@ -94,8 +94,12 @@
                     <img src="../images/user.png" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $_SESSION["NOMBRE"]; ?></div>
-                    <div class="email"><?php echo $_SESSION["TIPO"]; ?></div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $_SESSION["NOMBRE"]; ?>
+                    </div>
+                    <div class="email">
+                        <?php echo $_SESSION["TIPO"]; ?>
+                    </div>
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
@@ -123,18 +127,18 @@
                     </li>
                     <li>
                         <a href="../Actividades/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Actividades</span>
                         </a>
                     </li>
                     <li>
                         <a href="../Talleres/">
-                            <i class="material-icons col-light-blue">person_pin_circle</i>
+                            <i class="material-icons col-light-blue">event</i>
                             <span>Talleres</span>
                         </a>
                     </li>
                     <li>
-                        <a href="j'../Grupos/'">
+                        <a href="../Grupos/">
                             <i class="material-icons col-light-blue">group</i>
                             <span>Grupos</span>
                         </a>
@@ -185,6 +189,11 @@
                             <div class="table-responsive">
                                 <table id="tblAlumnos" class="table table-striped table-hover">
                                     <thead>
+                                        <tr>
+                                            <th colspan="7">
+                                                <span id="docenteName"></span>
+                                            </th>
+                                        </tr>
                                         <tr>
                                             <th>No. de control</th>
                                             <th>Nombre</th>
@@ -268,6 +277,22 @@
                                                         ';
                                                     }
                                                 ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <label for="form-label">Docente</label>
+                                        <select name="docente" class="form-control show-tick" required>
+                                            <?php
+                                                $sql = "SELECT `matricula`, `nomdoc`, `docapaterno`, `docamaterno` FROM `tbl_docentes` WHERE `existe`=1";
+                                                $result = mysqli_query($conn, $sql);
+                                                while ($row = mysqli_fetch_array($result)) {
+                                                    echo '
+                                                    <option value="'.$row[0].'">'.$row[1].' '.$row[2].' '.$row[3].'</option>
+                                                    ';
+                                                }
+                                            ?>
                                         </select>
                                     </div>
                                 </div>

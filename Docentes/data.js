@@ -1,6 +1,6 @@
 $(function () {
     listar();
-    wizardForm();
+    //wizardForm();
     $('[href="#modal"]').on('click', function () {
         var modal = $(this).attr('data-target');
         limpiar_forms();
@@ -117,6 +117,7 @@ var listar = function () {
 var limpiar_forms = function () {
     $('#formData').trigger('reset');
     $('.form-line').removeClass('focused');
+    $("#matricula").removeAttr("readonly");
     $('#formData input').removeAttr("aria-invalid");
     $('#opcion').val("REGISTRAR");
 }

@@ -14,16 +14,20 @@ function registrarAlumno($nombre,$apaterno ,$amaterno ,$email ,$telefono,$genero
     if(mysqli_num_rows($result) > 0 ){
         die("EXIST");
     }
-    $sql = "INSERT INTO tbl_alumnos(`nocontrol`, `alunombre`, `aluapaterno`, `aluamaterno`, `idcarrera`, `tel`, `turno`, `correo`, `notalleres`, `imagen`, `alugenero`, `existe`) VALUES({$nocontrol}, '{$nombre}', '{$apaterno}', '{$amaterno}', {$carrera}, '{$telefono}', '{$turno}', '{$email}', 0, '{$imagen}', '{$genero}', 1)";
+    $sql = "INSERT INTO tbl_alumnos(`nocontrol`, `alunombre`, `aluapaterno`, `aluamaterno`, `idcarrera`, `tel`, `turno`, `correo`, `notalleres`, `imagen`, `alugenero`, `existe`) VALUES({$nocontrol}, '{$nombre}', '{$apaterno}', '{$amaterno}', {$carrera}, '{$telefono}', '{$turno}', '{$email}', 1, '{$imagen}', '{$genero}', 1)";
     if(mysqli_query($conn, $sql) == TRUE){
         if($foto["name"]!="")    
             move_uploaded_file($foto['tmp_name'],$ruta);
 
         $sql = "INSERT INTO `tbl_asig_grupo_alumn`(`nocontrol`, `idgrupo`, `idperiodo`, `asigexiste`) VALUES ({$nocontrol},{$grupo},{$periodo},1)";
         if(mysqli_query($conn, $sql) == TRUE){
-            $sql = "INSERT INTO `tbl_usuarios`(`usuario`, `clave`, `tipo`, `existe`) VALUES ({$nocontrol},{$nocontrol},1,1)";
+            $hoy = date("Y-m-d");
+            $sql = "INSERT INTO `tbl_pagos`(`nocontrol`, `monto`, `idperiodo`,`fechapago`, `existe`) VALUES ({$nocontrol},200,1,'{$hoy}',1)";
             if(mysqli_query($conn, $sql) == TRUE){
-                die("ADDED");
+                $sql = "INSERT INTO `tbl_usuarios`(`usuario`, `clave`, `tipo`, `existe`) VALUES ({$nocontrol},{$nocontrol},1,1)";
+                if(mysqli_query($conn, $sql) == TRUE){
+                    die("ADDED");
+                }
             }
         }
     }
@@ -83,12 +87,19 @@ function addTalleres($nocontrol, $notalleres){
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_array($result);
     $notalleres = $notalleres+$row[0];
-
-    $sql = "UPDATE tbl_alumnos SET notalleres = {$notalleres} WHERE nocontrol = {$nocontrol}";
+    $sql = "SELECT monto FROM tbl_pagos WHERE nocontrol = {$nocontrol}";
+    $result = mysqli_query($conn, $sql);
+    $cantidad = mysqli_fetch_array($result);
+    $monto = $notalleres*50;
+    $total = $monto+$cantidad[0];
+    $sql = "UPDATE tbl_pagos SET monto = {$total} WHERE nocontrol = $nocontrol";
     if(mysqli_query($conn, $sql) === TRUE){
-        die('true');
-    }else{
-        die('false');
+        $sql = "UPDATE tbl_alumnos SET notalleres = {$notalleres} WHERE nocontrol = {$nocontrol}";
+        if(mysqli_query($conn, $sql) === TRUE){
+            die('true');
+        }else{
+            die('false');
+        }
     }
 }
 if (isset($_POST["opcion"])) {
