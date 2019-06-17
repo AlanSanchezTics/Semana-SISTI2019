@@ -80,7 +80,7 @@ function addTalleres($nocontrol, $notalleres){
 function getDatos($id){
     include '../database.php';
 
-    $sql = "SELECT tbl_grupo.idgrupo, tbl_grupo.nomgrupo, tbl_grupo.semestre,tbl_grupo.carrera, tbl_asig_grupo_doc.iddoc  FROM tbl_grupo, tbl_asig_grupo_doc where tbl_asig_grupo_doc.idgrupo= tbl_grupo.idgrupo AND idgrupo = {$id}";
+    $sql = "SELECT tbl_grupo.idgrupo, tbl_grupo.nomgrupo, tbl_grupo.semestre,tbl_grupo.carrera, tbl_asig_grupo_doc.iddoc  FROM tbl_grupo, tbl_asig_grupo_doc where tbl_asig_grupo_doc.idgrupo= tbl_grupo.idgrupo AND tbl_grupo.idgrupo = {$id}";
     $result = mysqli_query($conn, $sql);
     if(!$result){
         die(mysqli_error($conn));
